@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SRT Dosya Çeviri Aracı</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header>
+    <h1>SRT Dosya Çeviri Aracı</h1>
+    <!-- Tema Değiştir Butonu -->
+    <button class="theme-toggle-btn" id="themeToggleBtn" aria-label="Tema Değiştir">Tema Değiştir</button>
+  </header>
+
+  <main>
+    <p class="description">
+      SRT formatındaki altyazı dosyalarınızı kolayca Türkçeye (veya istediğiniz herhangi bir dile) çevirin. Aşağıdaki adımları izleyerek dönüştürülmüş dosyanızı saniyeler içinde indirip kullanmaya başlayabilirsiniz.
+    </p>
+
+    <!-- Adım 1: Dosya Seç -->
+    <section class="step">
+      <h3>Adım 1: Dosya Seç</h3>
+      <p>Bilgisayarınızdan .srt uzantılı altyazı dosyanızı seçin.</p>
+      <div class="file-input">
+        <label for="srtFile">SRT Dosyası Seç</label>
+        <input type="file" id="srtFile" accept=".srt">
+      </div>
+    </section>
+
+    <!-- Adım 2: Ayarları Girin -->
+    <section class="step">
+      <h3>Adım 2: Ayarları Girin</h3>
+      <p>Aşağıdaki ayarları ihtiyacınıza göre düzenleyebilirsiniz.</p>
+      <div class="configurations">
+        <!-- Batch Size -->
+        <div class="config-item">
+          <label for="batchSize">Batch Size:</label>
+          <input type="number" id="batchSize" value="3" min="1">
+        </div>
+        <!-- Sleep Time -->
+        <div class="config-item">
+          <label for="sleepTime">Sleep Time (s):</label>
+          <input type="number" id="sleepTime" value="4" min="1">
+        </div>
+        <!-- Max Retries -->
+        <div class="config-item">
+          <label for="maxRetries">Max Retries:</label>
+          <input type="number" id="maxRetries" value="3" min="1">
+        </div>
+        <!-- Hedef Dil (Dil Seçimi) -->
+        <div class="config-item">
+          <label for="targetLanguage">Hedef Dil:</label>
+          <select id="targetLanguage">
+            <option value="Albanian">Arnavutça</option>
+            <option value="Arabic">Arapça</option>
+            <option value="Bengali">Bengalce</option>
+            <option value="Bosnian">Boşnakça</option>
+            <option value="Bulgarian">Bulgarca</option>
+            <option value="Chinese">Çince</option>
+            <option value="Croatian">Hırvatça</option>
+            <option value="Czech">Çekçe</option>
+            <option value="Danish">Danca</option>
+            <option value="Dutch">Hollandaca</option>
+            <option value="English">İngilizce</option>
+            <option value="Filipino">Filipince</option>
+            <option value="Finnish">Fince</option>
+            <option value="French">Fransızca</option>
+            <option value="German">Almanca</option>
+            <option value="Greek">Yunanca</option>
+            <option value="Hebrew">İbranice</option>
+            <option value="Hindi">Hintçe</option>
+            <option value="Hungarian">Macarca</option>
+            <option value="Indonesian">Endonezce</option>
+            <option value="Italian">İtalyanca</option>
+            <option value="Japanese">Japonca</option>
+            <option value="Korean">Korece</option>
+            <option value="Malay">Malayca</option>
+            <option value="Norwegian">Norveççe</option>
+            <option value="Pashto">Peştuca</option>
+            <option value="Persian">Farsça</option>
+            <option value="Polish">Lehçe</option>
+            <option value="Portuguese">Portekizce</option>
+            <option value="Romanian">Romence</option>
+            <option value="Russian">Rusça</option>
+            <option value="Serbian">Sırpça</option>
+            <option value="Slovak">Slovakça</option>
+            <option value="Spanish">İspanyolca</option>
+            <option value="Swedish">İsveççe</option>
+            <option value="Thai">Tayca</option>
+            <option value="Turkish" selected>Türkçe</option>
+            <option value="Ukrainian">Ukraynaca</option>
+            <option value="Urdu">Urduca</option>
+            <option value="Vietnamese">Vietnamca</option>
+          </select>          
+        </div>
+        <!-- Model Türü (flash/pro) -->
+        <div class="config-item">
+          <label for="modelType">Model Türü:</label>
+          <select id="modelType">
+            <option value="flash" selected>Flash</option>
+            <option value="pro">Pro</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- Adım 3: Yükle ve Çevir -->
+    <section class="step">
+      <h3>Adım 3: Yükle ve Çevir</h3>
+      <p>Seçtiğiniz dosyayı yüklemek ve çeviri işlemini başlatmak için aşağıdaki butona tıklayın.</p>
+      <div class="actions">
+        <button id="uploadBtn">Yükle ve Çevir</button>
+      </div>
+      <p id="status"></p>
+    </section>
+
+    <!-- Adım 4: Dosyayı İndir -->
+    <section class="step">
+      <h3>Adım 4: Dosyayı İndir</h3>
+      <p>Çeviri tamamlandığında, aşağıdaki bağlantılar üzerinden çıktıları bilgisayarınıza indirebilirsiniz.</p>
+      <div class="download-links">
+        <a id="extractedDownloadLink" style="display: none;">Ayıklanmış Diyalogları İndir</a>
+        <a id="downloadLink" style="display: none;">Çevrilen SRT Dosyasını İndir</a>
+      </div>
+    </section>
+
+    <!-- Canlı Çeviri Önizlemesi -->
+    <section>
+      <h2>Canlı Çeviri Önizlemesi</h2>
+      <p class="section-title">Sistemden gelen çeviri çıktısı:</p>
+      <pre id="translationPreview"></pre>
+    </section>
+
+    <!-- Debug Bilgileri -->
+    <section>
+      <h2>Geliştirici Bilgileri (Debug)</h2>
+      <p class="section-title">Gönderilen Prompt:</p>
+      <pre id="promptDisplay"></pre>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 SRT Dosya Çeviri Aracı. Tüm hakları saklıdır.</p>
+  </footer>
+
+  <script type="module" src="/main.js"></script>
+  <script>
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    themeToggleBtn.addEventListener('click', () => {
+      document.body.classList.toggle('dark-theme');
+    });
+  </script>
+</body>
+</html>
